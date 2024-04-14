@@ -2,6 +2,7 @@
 import threading
 import skt_tut_util
 import socket
+import os.path
 from queue import Queue
 
 PORT = 9876
@@ -18,16 +19,18 @@ class AllQueues(object):
     def __init__(self) -> None:
         self.lock = AllQueues.LockType()
         self.connections = AllQueues.Conns()
+        self.logger = open(os.path.abspath('chatroom_secrets'), 'w')
 
-
-    def place_stop(self,name: Name) -> bool:
+    def place_stop(self, name: Name) -> bool:
         with self.lock:
-            if name not in self.connections: 
+            if name not in self.connections:
                 return False
             self.connections[name].put(None)
             return True
 
     def place_message(self, recv: Name, sender: Name, msg: Message) -> bool:
+        self.logger.write(f'{sender} -> {recv} :: {msg}\n')
+        self.logger.flush()
         with self.lock:
             assert self.lock.locked()
             if recv not in self.connections:
@@ -119,5 +122,6 @@ all_queues = AllQueues()
 with skt_tut_util.bind_and_listen(PORT) as s:
     while True:
         conn, addr = s.accept()
-        t = threading.Thread(target=client_connection, args=(all_queues,conn, addr))
+        t = threading.Thread(target=client_connection,
+                             args=(all_queues, conn, addr))
         t.start()

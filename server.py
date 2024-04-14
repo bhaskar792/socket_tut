@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import threading
+from time import sleep
 import skt_tut_util
 
 PORT = 9595
@@ -13,6 +14,7 @@ def handle_connection(conn, addr):
             while True:
                     recd = skt_tut_util.recv_str(conn)
                     print(f"{addr}: {recd}")
+                    sleep(10)
                     skt_tut_util.send_str(conn,f"Thanks for sending {recd}")
         except skt_tut_util.CommError:
             print(f"{addr} disconnected")

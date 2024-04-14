@@ -9,6 +9,11 @@ We raise this for everything
 class CommError(Exception):
     pass
 
+def wrap_comm_err(f,*args):
+    try:
+        return f(*args)
+    except CommError:
+        return CommError()
 
 
 def bind_and_listen(port, ip = '') -> socket.socket:
@@ -25,7 +30,6 @@ def bind_and_listen(port, ip = '') -> socket.socket:
 def connect(ip, port) -> socket.socket:
     try:
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        s.settimeout(5)
         s.connect((ip,port))
         return s
     except OSError:
@@ -37,13 +41,16 @@ def recv_exactly(skt: socket.socket, count: int) -> bytes:
     def pending():
         return count - len(ret)
 
-    while (pending() > 0):
-        d = skt.recv(pending())
-        if not d:
-            raise CommError()
-        ret += d
+    try:
+        while (pending() > 0):
+            d = skt.recv(pending())
+            if not d:
+                raise CommError()
+            ret += d
 
-    return ret
+        return ret
+    except ConnectionResetError:
+        raise CommError()
 
 def recv_str(skt: socket.socket) -> str:
     str_len = int.from_bytes(recv_exactly(skt, STRLEN_BYTES))

@@ -92,6 +92,8 @@ def client_connection(all_queues: AllQueues, skt: socket.socket, addr):
             potential_queue = all_queues.add_queue(potential_name)
             if potential_queue is None:
                 skt_tut_util.send_str(skt, f"{potential_name} already taken")
+                return
+
         except skt_tut_util.CommError:
             return
         assert type(potential_name) is not None

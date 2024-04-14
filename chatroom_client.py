@@ -3,28 +3,31 @@ import skt_tut_util
 import threading
 import sys
 
-server_ip = ''
+me_name = sys.argv[1]
+server_ip = sys.argv[2]
 server_port = 9876
 
 
 def msg_reader(skt):
-    while(True):
+    while (True):
         got = skt_tut_util.recv_str(skt)
         print(got)
 
 
-
 def msg_writer(skt):
-    while(True):
-       write_data = input()
-       skt_tut_util.send_str(skt,write_data)
+    while (True):
+        print("Enter receiver: ")
+        recvr = input()
+        print("Enter message: ")
+        msg = input()
+        skt_tut_util.send_str(skt, recvr)
+        skt_tut_util.send_str(skt, msg)
 
 
-
-with skt_tut_util.connect(server_ip,server_port) as skt:
-    skt_tut_util.send_str(skt,"suraaj")
-    t1 = threading.Thread(target=msg_reader,args=(skt,))
-    t2 = threading.Thread(target=msg_writer,args=(skt,))
+with skt_tut_util.connect(server_ip, server_port) as skt:
+    skt_tut_util.send_str(skt, me_name)
+    t1 = threading.Thread(target=msg_reader, args=(skt,))
+    t2 = threading.Thread(target=msg_writer, args=(skt,))
     t1.start()
     t2.start()
     t1.join()

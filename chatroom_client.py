@@ -11,14 +11,13 @@ server_port = 9876
 def msg_reader(skt):
     while (True):
         got = skt_tut_util.recv_str(skt)
-        print(got)
-
+        print(got,file=sys.stdout)
 
 def msg_writer(skt):
     while (True):
-        print("Enter receiver: ")
+        print("Enter receiver: ",end='')
         recvr = input()
-        print("Enter message: ")
+        print("Enter message: ",end='')
         msg = input()
         skt_tut_util.send_str(skt, recvr)
         skt_tut_util.send_str(skt, msg)

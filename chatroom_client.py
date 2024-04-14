@@ -5,13 +5,15 @@ import sys
 
 me_name = sys.argv[1]
 server_ip = sys.argv[2]
+me_file = open(me_name,'w')
 server_port = 9876
 
 
 def msg_reader(skt):
     while (True):
         got = skt_tut_util.recv_str(skt)
-        print(got,file=sys.stdout)
+        me_file.write(got+'\n')
+        me_file.flush()
 
 def msg_writer(skt):
     while (True):

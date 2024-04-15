@@ -4,8 +4,6 @@ import skt_tut_util
 
 PORT = 9595
 
-
-
 def handle_connection(conn, addr):
     print(f"Got connection from {addr}")
     with conn:
@@ -13,7 +11,7 @@ def handle_connection(conn, addr):
             while True:
                     recd = skt_tut_util.recv_str(conn)
                     print(f"{addr}: {recd}")
-                    skt_tut_util.send_str(conn,f"Thanks for sending {recd}")
+                    skt_tut_util.send_str(conn,f"Thanks for sending <{recd}>")
         except skt_tut_util.CommError:
             print(f"{addr} disconnected")
 

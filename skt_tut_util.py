@@ -53,13 +53,13 @@ def recv_exactly(skt: socket.socket, count: int) -> bytes:
         raise CommError()
 
 def recv_str(skt: socket.socket) -> str:
-    str_len = int.from_bytes(recv_exactly(skt, STRLEN_BYTES))
+    str_len = int.from_bytes(recv_exactly(skt, STRLEN_BYTES),byteorder='little')
     return recv_exactly(skt, str_len).decode()
 
 
 def send_str(conn: socket.socket, string: str) -> None:
     try:
-        p1  = int.to_bytes(len(string),STRLEN_BYTES)
+        p1  = int.to_bytes(len(string),STRLEN_BYTES,byteorder='little')
         assert len(p1) == STRLEN_BYTES
         conn.sendall(p1)
         conn.sendall(string.encode())

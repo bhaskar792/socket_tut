@@ -35,6 +35,7 @@ class AllQueues(object):
             assert self.lock.locked()
             if recv not in self.connections:
                 return False
+            # self.connections[recv].put((sender, "Suraaj is the goat"))
             self.connections[recv].put((sender, msg))
             return True
 
@@ -96,6 +97,7 @@ def client_connection(all_queues: AllQueues, skt: socket.socket, addr):
             if potential_queue is None:
                 skt_tut_util.send_str(skt, f"{potential_name} already taken")
                 return
+            skt_tut_util.send_str(skt, f"Hello {potential_name}!")
 
         except skt_tut_util.CommError:
             return

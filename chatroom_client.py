@@ -27,6 +27,8 @@ def msg_writer(skt):
 
 with skt_tut_util.connect(server_ip, server_port) as skt:
     skt_tut_util.send_str(skt, me_name)
+    resp = skt_tut_util.recv_str(skt)
+    print(resp)
     t1 = threading.Thread(target=msg_reader, args=(skt,))
     t2 = threading.Thread(target=msg_writer, args=(skt,))
     t1.start()

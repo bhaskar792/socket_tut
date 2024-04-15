@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import skt_tut_util
-import sys
 
 server_ip = ''
 SERVER_PORT = 9595

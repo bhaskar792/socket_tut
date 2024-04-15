@@ -19,6 +19,7 @@ def wrap_comm_err(f,*args):
 def bind_and_listen(port, ip = '') -> socket.socket:
     try:
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind((ip,port))
         s.listen()
         return s

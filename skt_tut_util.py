@@ -53,16 +53,28 @@ def recv_exactly(skt: socket.socket, count: int) -> bytes:
     except ConnectionResetError:
         raise CommError()
 
+
+
+MAGIC_BYTES = b'magic'
 def recv_str(skt: socket.socket) -> str:
+    m1 = recv_exactly(skt,len(MAGIC_BYTES))
+    if m1 != MAGIC_BYTES:
+        raise CommError()
     str_len = int.from_bytes(recv_exactly(skt, STRLEN_BYTES),byteorder='little')
-    return recv_exactly(skt, str_len).decode()
+    ret =  recv_exactly(skt, str_len).decode()
+    m2 = recv_exactly(skt,len(MAGIC_BYTES))
+    if m2 != MAGIC_BYTES:
+        raise CommError()
+    return ret
 
 
 def send_str(conn: socket.socket, string: str) -> None:
     try:
         p1  = int.to_bytes(len(string),STRLEN_BYTES,byteorder='little')
         assert len(p1) == STRLEN_BYTES
+        conn.sendall(MAGIC_BYTES)
         conn.sendall(p1)
         conn.sendall(string.encode())
+        conn.sendall(MAGIC_BYTES)
     except OSError:
         raise CommError()

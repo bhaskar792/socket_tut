@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 import skt_tut_util
+import sys
+server_ip = sys.argv[1]
+server_port = int(sys.argv[2])
 
-server_ip = ''
-SERVER_PORT = 9595
 
-
-with skt_tut_util.connect(server_ip,SERVER_PORT) as skt:
+with skt_tut_util.connect(server_ip,server_port) as skt:
     while(True):
         write_data = input()
         skt_tut_util.send_str(skt,write_data)
